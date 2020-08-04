@@ -1,0 +1,257 @@
+1
+1
+1
+1
+1
+1
+1
+result: 1nmap: 1 ddos: 3 quality: 0.378323649773
+1
+result: 1nmap: 1 ddos: 3 quality: 0.369384247706
+1
+result: 1nmap: 1 ddos: 3 quality: 0.385763450329
+1
+result: 1nmap: 1 ddos: 3 quality: 0.362100654309
+1
+result: 1nmap: 1 ddos: 3 quality: 0.378098283621
+1
+result: 1nmap: 1 ddos: 3 quality: 0.274312806056
+1
+result: 1nmap: 1 ddos: 3 quality: 0.277016593933
+1
+result: 1nmap: 1 ddos: 3 quality: 0.269026710217
+1
+result: 1nmap: 1 ddos: 3 quality: 0.280023834522
+1
+result: 1nmap: 1 ddos: 3 quality: 0.272028756949
+1
+result: 1nmap: 1 ddos: 3 quality: 0.27766271151
+1
+result: 1nmap: 1 ddos: 3 quality: 0.274021963853
+1
+result: 1nmap: 1 ddos: 3 quality: 0.274159784464
+1
+result: 1nmap: 1 ddos: 3 quality: 0.272773605934
+1
+result: 1nmap: 1 ddos: 3 quality: 0.266022462698
+1
+result: 1nmap: 1 ddos: 3 quality: 0.279590034191
+1
+result: 1nmap: 1 ddos: 3 quality: 0.272869626265
+1
+result: 1nmap: 1 ddos: 3 quality: 0.268517694327
+1
+result: 1nmap: 1 ddos: 3 quality: 0.274394249843
+1
+result: 1nmap: 1 ddos: 3 quality: 0.276949202611
+1
+result: 1nmap: 1 ddos: 3 quality: 0.271246440887
+1
+result: 1nmap: 1 ddos: 3 quality: 0.270622988187
+1
+result: 1nmap: 1 ddos: 3 quality: 0.279433023599
+1
+result: 1nmap: 1 ddos: 3 quality: 0.264984011723
+1
+result: 1nmap: 1 ddos: 3 quality: 0.264914034036
+1
+result: 1nmap: 1 ddos: 3 quality: 0.281471349863
+1
+result: 1nmap: 1 ddos: 3 quality: 0.291982625228
+1
+result: 1nmap: 1 ddos: 3 quality: 0.282557206667
+1
+result: 1nmap: 1 ddos: 3 quality: 0.290004097572
+1
+result: 1nmap: 1 ddos: 3 quality: 0.286145244598
+1
+result: 1nmap: 1 ddos: 3 quality: 0.31294934933
+1
+result: 1nmap: 1 ddos: 3 quality: 0.316531933418
+1
+result: 1nmap: 1 ddos: 3 quality: 0.318498118767
+1
+result: 1nmap: 1 ddos: 0 quality: 0.270734468607
+1
+result: 1nmap: 1 ddos: 0 quality: 0.277523144942
+1
+result: 1nmap: 1 ddos: 3 quality: 0.264025859246
+1
+result: 1nmap: 1 ddos: 0 quality: 0.263616847112
+1
+result: 1nmap: 1 ddos: 0 quality: 0.278725147834
+1
+result: 1nmap: 1 ddos: 0 quality: 0.281595154689
+1
+result: 1nmap: 1 ddos: 0 quality: 0.279317705595
+1
+result: 1nmap: 1 ddos: 0 quality: 0.278606187967
+1
+result: 1nmap: 1 ddos: 0 quality: 0.282042342553
+1
+result: 1nmap: 1 ddos: 0 quality: 0.282093602987
+1
+result: 1nmap: 1 ddos: 0 quality: 0.282217349126
+1
+result: 1nmap: 1 ddos: 0 quality: 0.282930913485
+1
+result: 1nmap: 1 ddos: 0 quality: 0.280446416708
+1
+result: 1nmap: 1 ddos: 0 quality: 0.280724694766
+1
+result: 1nmap: 1 ddos: 0 quality: 0.282129163595
+1
+result: 1nmap: 1 ddos: 0 quality: 0.279523646428
+1
+result: 1nmap: 1 ddos: 0 quality: 0.282782184307
+1
+result: 1nmap: 1 ddos: 0 quality: 0.278106518085
+1
+result: 1nmap: 1 ddos: 0 quality: 0.281625782306
+1
+result: 1nmap: 1 ddos: 0 quality: 0.278112658281
+1
+result: 1nmap: 1 ddos: 0 quality: 0.27811035479
+1
+result: 1nmap: 1 ddos: 0 quality: 0.281105759254
+1
+result: 1nmap: 1 ddos: 0 quality: 0.276458255181
+1
+result: 1nmap: 1 ddos: 0 quality: 0.284635927934
+1
+result: 1nmap: 1 ddos: 0 quality: 0.283895850842
+1
+result: 1nmap: 1 ddos: 0 quality: 0.278416781792
+1
+result: 1nmap: 1 ddos: 0 quality: 0.278845821087
+1
+result: 1nmap: 1 ddos: 0 quality: 0.263576932174
+1
+result: 1nmap: 1 ddos: 0 quality: 0.264201222053
+1
+result: 1nmap: 1 ddos: 0 quality: 0.263973095821
+1
+result: 1nmap: 1 ddos: 0 quality: 0.266184231978
+1
+result: 1nmap: 1 ddos: 0 quality: 0.274314423194
+1
+result: 1nmap: 1 ddos: 0 quality: 0.27620447599
+1
+result: 1nmap: 1 ddos: 0 quality: 0.276647442157
+1
+result: 1nmap: 1 ddos: 0 quality: 0.273893607506
+1
+result: 1nmap: 1 ddos: 0 quality: 0.277081044417
+1
+result: 1nmap: 1 ddos: 0 quality: 0.273201860281
+1
+result: 1nmap: 1 ddos: 0 quality: 0.275412171584
+1
+result: 1nmap: 1 ddos: 0 quality: 0.27619168531
+1
+result: 1nmap: 1 ddos: 0 quality: 0.275443888151
+1
+result: 1nmap: 1 ddos: 0 quality: 0.277697664114
+1
+result: 1nmap: 1 ddos: 0 quality: 0.274135660612
+1
+result: 1nmap: 1 ddos: 0 quality: 0.274049507141
+1
+result: 1nmap: 1 ddos: 0 quality: 0.273501566667
+1
+result: 1nmap: 1 ddos: 0 quality: 0.264727741535
+1
+result: 1nmap: 1 ddos: 0 quality: 0.273814496554
+1
+result: 1nmap: 1 ddos: 0 quality: 0.276269739885
+1
+result: 1nmap: 1 ddos: 0 quality: 0.274133463933
+1
+result: 1nmap: 1 ddos: 0 quality: 0.274887797429
+1
+result: 1nmap: 1 ddos: 0 quality: 0.276253549429
+1
+result: 1nmap: 1 ddos: 0 quality: 0.274518145928
+1
+result: 1nmap: 1 ddos: 0 quality: 0.272562697191
+1
+result: 1nmap: 1 ddos: 0 quality: 0.272906049288
+1
+result: 1nmap: 1 ddos: 0 quality: 0.26373183089
+1
+result: 1nmap: 1 ddos: 0 quality: 0.26374801401
+1
+result: 1nmap: 1 ddos: 3 quality: 0.263521450336
+1
+result: 1nmap: 1 ddos: 3 quality: 0.263806547605
+1
+result: 1nmap: 1 ddos: 3 quality: 0.263761981671
+1
+result: 1nmap: 1 ddos: 3 quality: 0.264355478433
+1
+result: 1nmap: 0 ddos: 3 quality: 0.308345831358
+1
+result: 1nmap: 0 ddos: 3 quality: 0.184901788565
+1
+result: 1nmap: 0 ddos: 3 quality: 0.211016007937
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0499015696599
+1
+result: 1nmap: 1 ddos: 3 quality: 0.0502373982943
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0370185452975
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0390087412321
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0383890771132
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0374370395954
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0403998683049
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0406277189988
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0406286286574
+1
+result: 1nmap: 1 ddos: 3 quality: 0.0334860258836
+1
+result: 1nmap: 1 ddos: 3 quality: 0.0388993034363
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0404010127141
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0368490521358
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0424810227614
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0386342626718
+1
+result: 1nmap: 1 ddos: 3 quality: 0.0300974182716
+1
+result: 1nmap: 0 ddos: 3 quality: 0.0379992851844
+1
+result: 28629.460576time_vector: 1nmap: 0 ddos: 3 quality: 0.28628460576
+1
+result: 29237.0151438time_vector: 1nmap: 0 ddos: 3 quality: 0.292360151438
+1
+result: 26904.4984436time_vector: 1nmap: 1 ddos: 3 quality: 0.268944984436
+1
+result: 26812.0980835time_vector: 1nmap: 1 ddos: 3 quality: 0.268020980835
+1
+result: 36.9492044596time_vector: 1nmap: 1 ddos: 0 quality: 0.269492044596
+1
+result: 36.8525382409time_vector: 1nmap: 1 ddos: 0 quality: 0.268525382409
+1
+result: 39.0490731459time_vector: 1nmap: 1 ddos: 0 quality: 0.290490731459
+1
+result: 37.0480285058time_vector: 1nmap: 1 ddos: 0 quality: 0.270480285058
+1
+result: 38.0928207104time_vector: 1nmap: 1 ddos: 0 quality: 0.280928207104
+1
+result: 10.5670510876time_vector: 1nmap: 1 ddos: 0 quality: 0.5670510876
+pow(10,ddos)*quality0.5670510876
+1
+result: 10.5950377508time_vector: 1nmap: 1 ddos: 0 quality: 0.595037750831
+pow(10,ddos)*quality0.595037750831
+1
+result: 64.3659341079time_vector: 1nmap: 1 ddos: 2 quality: 0.543659341079
+pow(10,ddos)*quality54.3659341079

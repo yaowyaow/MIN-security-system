@@ -138,6 +138,7 @@ def sendTest(message):
 	if ddos_result["Hostile_Packets_Detected"] != '0':
 		event_data = json.loads(ddos_result["Hostile_Packets_Info"])
 		event_data[0]["event"] = "DDoS"
+		print event_data
 		sendMongoDB(event_data)
 	pass
     except Exception as e:
@@ -210,13 +211,13 @@ MAX_SPEED = 65
 def S_Assess(nmap, ddos):
     if nmap!='0' or ddos!='0':
 	    #定权值
-	    nmap = 1 if nmap>0 else 0
-	    ddos = 3 if ddos>0 else 0
+	    nmap = 1 if nmap>"0" else 0
+	    ddos = 2 if ddos>"0" else 0
 	    #时间向量
 	    t_now = strftime("%H:%M:%S")
 	    if t_now >= "0" and t_now < "9": #24:00 - 9:00
 		t_vector = 1
-	    elif t_now >= "9" and t_now < "18": #9:00 - 18:00
+	    elif t_now < "18": #9:00 - 18:00
 		t_vector = 3
 	    else:
 		t_vector = 2
@@ -228,9 +229,15 @@ def S_Assess(nmap, ddos):
 	    speed_percent = speed/MAX_SPEED
 	    #cpu占用比
 	    cpu = psutil.cpu_percent(None)/100
-	    quality = (speed_percent + cpu)/2
+	    #cpu和bindwidth中和
+	    quality = (speed_percent + cpu)
 	    #求态势值
-	    result = t_vector*(pow(10,nmap) + 100*pow(10,ddos)*quality)
+	    result = t_vector*(pow(10,nmap) + pow(10,ddos)*quality)
+	    #with open("test_value.txt", "a") as file_object:
+	    #	file_object.write("1\n")
+	#	file_object.write("result: "+str(result) + "time_vector: "+str(t_vector) + "nmap: "+ str(nmap) + " ddos: "+ str(ddos)+" quality: "+ str(quality)+"\n")
+	#	file_object.write("pow(10,ddos)*quality"+str(pow(10,ddos)*quality)+"\n")
+		#file_object.close()
     else:
 	    result = 0
     #sendMongoDB
@@ -289,7 +296,7 @@ except Exception as e:
 
 try:
 	import pymysql
-	sql_db = pymysql.connect(host="localhost", user="root", password="123456", port=3306)
+	sql_db = pymysql.connect(host="localhost", user="root", password="root", port=3306)
 	cursor = sql_db.cursor()
 	cursor.execute("use ossec;")
 except Exception as e:

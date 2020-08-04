@@ -21,7 +21,7 @@ except:
 class S_Assessment(object):
 	
 	def __init__(self):
-		self.db = pymysql.connect(host="localhost", user="root", password="123456", port=3306)
+		self.db = pymysql.connect(host="localhost", user="root", password="root", port=3306)
 		self.cursor = self.db.cursor()
 		self.cursor.execute("use ossec;")
 
@@ -31,8 +31,8 @@ class S_Assessment(object):
 		t = time.time() - mins*60
 		sql = "select rule_id,level from alert where timestamp >= " + str(t) + ";"
 		try:
-			#print "==========\nsql: ",sql,"============"
-			self.db = pymysql.connect(host="localhost", user="root", password="123456", port=3306)
+			print "==========\nsql: ",sql,"============"
+			self.db = pymysql.connect(host="localhost", user="root", password="root", port=3306)
                 	self.cursor = self.db.cursor()
                 	self.cursor.execute("use ossec;")
 			self.cursor.execute(sql)

@@ -14,6 +14,7 @@ import argparse
 from utils import *
 import userFrequency
 from IPy import IP as IPTEST
+#import Queue
 try:
     import netifaces
 except ImportError:
@@ -283,6 +284,7 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	#消息队列，防止线程之间数据交换冲突
+	import Queue
 	log_queue = Queue.Queue()
 	#workerThread = []
 

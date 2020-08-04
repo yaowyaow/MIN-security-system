@@ -19,6 +19,8 @@ const packet_flow = require("../../modeis/packet_flow");//引用
 const event_log = require("../../modeis/event_log");
 const users_frequency = require("../../modeis/users_frequency");
 const SA_event = require("../../modeis/SA_event");
+const SA_value = require("../../modeis/SA_value");
+const SA_host_value = require("../../modeis/SA_host_value");
 var process = require("child_process");
 
 //console.log(packet_flow.find({}).limit(3));
@@ -92,6 +94,33 @@ router.put("/ids_log_time", (req,res) => {
         res.json(err);
       });
     }
+});
+
+//查询最新的态势值
+router.get("/SA_value", (req,res) =>{
+    SA_value.find({})
+    .sort({ _id: -1 })
+    .limit(1)
+    .then(map => {
+      res.json(map);
+    })
+    .catch(err => {
+      console.log(2);
+      res.json(err);
+    });
+});
+
+router.get("/SA_host_value", (req,res) =>{
+    SA_host_value.find()
+    .sort({ "_id": -1 })
+    .limit(1)
+    .then(packet => {
+      res.json(packet);
+    })
+    .catch(err => {
+      console.log(2);
+      res.json(err);
+    });
 });
 
 
