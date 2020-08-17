@@ -21,6 +21,9 @@ const users_frequency = require("../../modeis/users_frequency");
 const SA_event = require("../../modeis/SA_event");
 const SA_value = require("../../modeis/SA_value");
 const SA_host_value = require("../../modeis/SA_host_value");
+const ueba_data = require("../../modeis/ueba_data")
+const login_data = require("../../modeis/login_time")
+const flow_data = require("../../modeis/flow_usage")
 var process = require("child_process");
 
 //console.log(packet_flow.find({}).limit(3));
@@ -315,8 +318,60 @@ router.put("/users_frequency_del", (req,res) => {
     }
 });
 
-    
+// 查询指定日期的ueba数据
+router.put("/ueba_data", (req,res) => {
+  if(req.body.params.time){
+    ueba_data.find({"date":req.body.params.time}).sort({_id:-1}).limit(1000)
+    .then(packet => {
+      res.json(packet);
+    })
+    .catch(err => {
+      console.log(2);
+      res.json(err);
+    });
+  }
+});  
 
+// 查询指定用户的ueba数据
+router.put("/ueba_user_data", (req,res) => {
+  if(req.body.params.username){
+    ueba_data.find({"username":req.body.params.username}).sort({_id:-1}).limit(1000)
+    .then(packet => {
+      let scores = [];
+      for(let i = 0; i < packet.length; i++){
+        scores.push(packet[i].score);
+      }
+      console.log(scores);
+      res.json(scores);
+    })
+    .catch(err => {
+      console.log(2);
+      res.json(err);
+    });
+  }
+}); 
+
+// 查询过去一周用户登录时间分布
+router.get("/login_time", (req,res) =>{
+  login_data.find().sort({_id:-1}).limit(1000)
+  .then(packet => {
+    res.json(packet);
+  })
+  .catch(err => {
+    res.json(err);
+  })
+});
+
+// 查询过去一周用户使用流量数据
+router.get("/flow_usage", (req,res) =>{
+  flow_data.find().sort({_id:-1}).limit(1000)
+  .then(packet => {
+    res.json(packet);
+  })
+  .catch(err => {
+    res.json(err);
+  })
+});
 
 module.exports = router; // 报错
 
