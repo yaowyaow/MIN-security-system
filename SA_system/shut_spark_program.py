@@ -2,7 +2,7 @@ import os
 import sys
 
 #get thread pid
-file_ = os.popen("ps -aux | grep spark_")
+file_ = os.popen("ps -aux | grep spark")
 text = file_.read()
 file_.close()
 
@@ -13,11 +13,11 @@ for each in text.split("\n"):
 print pid_list
 
 #kill the pids
-for pid in pid_list:
+for pid in pid_list[1:]:
         cmd = "kill -s 9 " + pid
         try:
                 os.system(cmd)
                 print pid + " killed"
-        except:
-                print "kill failed"
+        except Exception as e:
+                print "e\nkill failed"
 

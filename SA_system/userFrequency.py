@@ -24,6 +24,7 @@ def recordFrequency(db, conn, interval):
 
 def run():
 	db = MongoClient().packet_flow
+	db.authenticate("pkusz", "pkusz")
 	conn = db.packet_flow
 	recordFrequency(db, conn, 120)
 

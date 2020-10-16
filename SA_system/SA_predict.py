@@ -6,7 +6,22 @@ from sklearn import svm
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import cross_val_score
 import time
+import json
+import pickle
 
+'''
+ 加载态势数据
+'''
+def read_json_file(file_path, feature_name):
+    f = open(file_path)
+    str = f.readline()
+    temp = []
+    while str:
+        load_dict = json.loads(str)
+        temp.append(load_dict[feature_name])
+        str = f.readline()
+    f.close()
+    return temp
 
 '''
  从mongodb 读取态势值
@@ -14,7 +29,8 @@ import time
 def load_data(client, name):
     db = client['Situation_Awareness']
     collection = db[name]
-    df = pd.DataFrame(list(collection.find().limit(3).sort([('_id', -1)])))
+    db.authenticate("pkusz", "pkusz")
+    df = pd.DataFrame(list(collection.find().limit(6).sort([('_id', -1)])))
     return df
 '''
  建立mongodb连接
@@ -28,6 +44,7 @@ def connect():
 '''
 def clear(client, name):
     db = client['Situation_Awareness']
+    db.authenticate("pkusz", "pkusz")
     db[name].drop()
 	
 '''
@@ -35,6 +52,7 @@ def clear(client, name):
 '''
 def store_data(data, client, name):
     db = client['Situation_Awareness']
+    db.authenticate("pkusz", "pkusz")
     try:
         if db[name].insert(data):
             print 'success'
@@ -62,16 +80,28 @@ def create_series_data(sa_arr, interval):
  进行预测
 '''
 def predict(trainX, trainY, time_list, client, name, weight):
-    print trainY
+    entropy = 1
+    pow = 2
+    last_idx = -1
+    for i in range(len(trainX)):
+        if trainX[i] != 0:
+            entropy *= pow
+            last_idx = i
+    if trainY[0] != 0:
+        entropy *= pow
     for i in range(len(trainY)):
         temp_value = 0
         if trainY[i] == 0:
-            temp_value = 2 * np.random.random() * np.random.randint(10)
-        else:
-            temp_value = trainY[i] + np.random.randint(50*weight) * (-1 + 2 * np.random.random())
+            if last_idx == -1:
+                temp_value = trainY[i] + entropy * weight
+            else:
+                temp_value = trainX[last_idx] + entropy * weight
+        else: 
+            temp_value = trainY[i] + entropy * weight
+        # print temp_value
         data = {'value': temp_value, 'time': time_list[i]}
-        store_data(data, client, name)
-    return 
+        print data
+        store_data(data, client, name) 
 
 ## 2. PSO优化算法
 class PSO(object):
@@ -254,6 +284,24 @@ class PSO(object):
         self.plot(results)
         print('Final parameters are :',gbest_parameter)
 
+def train():
+    flow_sa = './sa_data.json'
+    flow_sa_arr = read_json_file(flow_sa, 'value')
+    X, Y = create_series_data(flow_sa_arr, 2)
+    print(len(Y))
+    trainX = X[10:]
+    trainY = Y[10:]
+    print(trainX)
+    print(trainY)
+    rbf_svm = svm.SVR(kernel='rbf', C=0.34961490485451796, gamma=0.43845625321732284)  # svm的使用函数
+    rbf_svm.fit(trainX, trainY)
+    pickle.dump(rbf_svm, open('SA_model.model', 'wb'), protocol=2)
+
+def weigh(data):
+    loaded_model = pickle.load(open('SA_model.model', 'rb'))
+    score = loaded_model.predict(data)
+    return score[0]
+
 def start():
     print('----------------1.Connect-------------------')
     client = connect()
@@ -263,11 +311,11 @@ def start():
     time_list = df['time'].tolist()
     value_list = list(reversed(value_list))
     time_list = list(reversed(time_list))
-    X_train, y_train = create_series_data(value_list, 2)
-    time_train, time_list = create_series_data(time_list, 2)
+    X_train, y_train = create_series_data(value_list[3:], 2)
+    time_train, time_list = create_series_data(time_list[3:], 2)
     print('----------------3.Predict-------------------')
     # clear(client, 'SA_predict_value')
-    predict(X_train, y_train, time_list, client, 'SA_predict_value', 100)
+    predict(value_list[0:5], y_train, time_list, client, 'SA_predict_value', weigh(X_train))
     print('----------------4.Disconnect-------------------')
     client.close()
     
@@ -281,16 +329,15 @@ def start2():
     time_list = df['time'].tolist()
     value_list = list(reversed(value_list))
     time_list = list(reversed(time_list))
-    X_train, y_train = create_series_data(value_list, 2)
-    time_train, time_list = create_series_data(time_list, 2)
+    X_train, y_train = create_series_data(value_list[3:], 2)
+    time_train, time_list = create_series_data(time_list[3:], 2)
     print('----------------3.Predict-------------------')
     # clear(client, 'SA_host_predict_value')
-    predict(X_train, y_train, time_list, client, 'SA_host_predict_value', 10)
+    predict(value_list[0:5], y_train, time_list, client, 'SA_host_predict_value', weigh(X_train))
     print('----------------4.Disconnect-------------------')
     client.close()
 
-if __name__ == "__main__":
-    client = connect()
+# if __name__ == "__main__":
     # df = load_data(client)
     # print df
     # begin = time.time()
@@ -301,11 +348,7 @@ if __name__ == "__main__":
     #clear(client, 'SA_predict_value')
     #clear(client, 'SA_host_predict_value')
     # client.close()
-    i = 0
-    while i<1:
-	i += 1
-	start()
-	start2()
+    # start()
     #for i in range(540):
     #    store_data({'value': 0}, client, 'SA_predict_value')
     #    store_data({'value': 0}, client, 'SA_host_predict_value')

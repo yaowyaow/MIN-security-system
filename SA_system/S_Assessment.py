@@ -80,6 +80,7 @@ class S_Assessment(object):
 		print "is running"
 		client = pymongo.MongoClient("mongodb://localhost:27017/")
 		db = client['Situation_Awareness']
+		db.authenticate("pkusz", "pkusz")
 		collection_name = 'SA_host_value'
 		collection = db[collection_name]
 		while True:

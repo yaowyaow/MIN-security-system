@@ -12,7 +12,7 @@ def pmacctd_start():
 	if nums > 2:
 		print "pmacctd has already been running"
 		pmacctd_shutdown()
-	cmd_start = " pmacctd -f /home/gdcni19/xin777/librdkafka/pmacct/pmacctd2.conf >/dev/null"
+	cmd_start = " pmacctd -f /home/gdcni18/xin777/librdkafka/pmacct/pmacctd2.conf >/dev/null"
 	try:
 		os.system(cmd_start)
 		print "pmacctd started"
@@ -47,7 +47,7 @@ def kafka_start_zookeeper():
 		print "zookeeper.properties has been running"
 		kafka_shutdown()
 	
-	cmd_start_zookeeper = "/home/gdcni19/xin777/kafka_2.13-2.5.0/bin/zookeeper-server-start.sh /home/gdcni19/xin777/kafka_2.13-2.5.0/config/zookeeper.properties >/dev/null"
+	cmd_start_zookeeper = "/home/gdcni18/xin777/kafka_2.13-2.5.0/bin/zookeeper-server-start.sh /home/gdcni18/xin777/kafka_2.13-2.5.0/config/zookeeper.properties >/dev/null"
 	try:
 		print "kafka zookeeper started"
                 os.system(cmd_start_zookeeper)
@@ -63,7 +63,7 @@ def kafka_start_server():
 		kafka_shutdown()
                 #kafka_shutdown()
 
-	cmd_start_server = "/home/gdcni19/xin777/kafka_2.13-2.5.0/bin/kafka-server-start.sh /home/gdcni19/xin777/kafka_2.13-2.5.0/config/server.properties >/dev/null"
+	cmd_start_server = "/home/gdcni18/xin777/kafka_2.13-2.5.0/bin/kafka-server-start.sh /home/gdcni18/xin777/kafka_2.13-2.5.0/config/server.properties >/dev/null"
 	try:
 		print "kafka server started"
 		os.system(cmd_start_server)
@@ -150,7 +150,7 @@ def test_kafka():
 	except Exception as e:
 		print "\n\n\n***********************************\nkafka server start failed "
 		print "ERROR: ",e
-		print "=======================================\nplease run the command : \nsudo /home/gdcni19/xin777/kafka_2.13-2.5.0/bin/kafka-server-start.sh /home/gdcni19/xin777/kafka_2.13-2.5.0/config/server.properties\n====================================\n\n\n"
+		print "=======================================\nplease run the command : \nsudo /home/gdcni18/xin777/kafka_2.13-2.5.0/bin/kafka-server-start.sh /home/gdcni18/xin777/kafka_2.13-2.5.0/config/server.properties\n====================================\n\n\n"
 
 
 

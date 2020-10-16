@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;//实例化Schema
 
 var mon_sa = mongoose
   .createConnection(
-    "mongodb://localhost:27017/Situation_Awareness",
+    "mongodb://pkusz:pkusz@localhost:27017/Situation_Awareness?authSource=admin",
     { useNewUrlParser: true }
         //,{mongos:true}
   );

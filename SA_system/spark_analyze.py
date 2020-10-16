@@ -3,6 +3,7 @@ from pyspark import SparkContext
 from pyspark import SparkConf
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import *
+from block_tcp import *
 import kafka
 import json
 import pymongo
@@ -16,7 +17,7 @@ import sys
 
 
 import os
-os.environ['PYSPARK_SUBMIT_ARGS'] = '--jars spark-streaming-kafka-0-8-assembly_2.11-2.4.6.jar pyspark-shell'
+os.environ['PYSPARK_SUBMIT_ARGS'] = '--driver-java-options -XX:+UseConcMarkSweepGC --jars spark-streaming-kafka-0-8-assembly_2.11-2.4.6.jar pyspark-shell'
 
 from flowDetect.flowDetect import *
 from utils import *
@@ -67,10 +68,12 @@ def mapper(record):
     record = json.loads(record)
     res = {}
     res["Source IP"] = record.get("ip_src")
+    '''
     if record.get("ip_src") == "121.15.171.82":
 	with open("test_lgx.txt","a") as f:
 		f.write("success")
 		f.close()
+    '''
     res['Dest IP'] = record.get('ip_dst')
     res['Transport Layer'] = record.get('ip_proto')
     res['Source Port'] = record.get('port_src')
@@ -106,11 +109,13 @@ def mapper(record):
 from kafka import KafkaProducer
 #持久化，输出到新的kafka topic
 
+'''
 producer = KafkaProducer(
     bootstrap_servers=['127.0.0.1:9092'],
     linger_ms=1000,
     batch_size=1000,
 )
+'''
 
 
 count = 1
@@ -123,6 +128,7 @@ def nums_count(data):
 
 def sendTest1(message):
     records = message.collect()
+    #message.count().pprint()
     with open("test_data.json", "a") as json_file:
         for json_str in records:
             json_file.write(json_str + '\n')
@@ -135,11 +141,16 @@ def sendTest(message):
     #ddos_result = ddos_detect(records)
     try:
         ddos_result = ddos_detect(records)
+	#ddos_result["Hostile_Packets_Detected"]=0
+	print ddos_result
 	if ddos_result["Hostile_Packets_Detected"] != '0':
 		event_data = json.loads(ddos_result["Hostile_Packets_Info"])
 		event_data[0]["event"] = "DDoS"
 		print event_data
 		sendMongoDB(event_data)
+		timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+		message = {"Type":"network", "Command":"Log", "Prefix":"/mis/update/danger_log", "Level":1, "Action":"DDos attack", "Sig":"xxx", "Timestamp":timestamp}
+		block_message(message)
 	pass
     except Exception as e:
 	print "ddos:\n",e
@@ -147,6 +158,8 @@ def sendTest(message):
     try:
 	#'''
         nmap_result = nmap_detect(records)
+	#nmap_result["Hostile_Packets_Detected"]=0
+	print nmap_result
 	if nmap_result["Hostile_Packets_Detected"] != '0':
 		#print '默认接收为json格式，转换'
 		event_data = json.loads(nmap_result["Hostile_Packets_Info"])
@@ -154,10 +167,12 @@ def sendTest(message):
 			each["event"] = "Scan" 
 		print event_data
 		sendMongoDB(event_data)
+		message = {"Type":"network", "Command":"Log", "Prefix":"/mis/update/danger_log", "Level":1, "Action":"Scan warning", "Sig":"xxx", "Timestamp":time.strftime("%Y-%m-%d %H:%M:%S")}
+		block_message(message)
 	#'''
 	pass
     except Exception as e:
-	print "nmap:\n",e
+	print "nmap_result error:",e
         #pass
     try:
         S_Assess(nmap_result["Hostile_Packets_Detected"], ddos_result["Hostile_Packets_Detected"])
@@ -250,6 +265,7 @@ def S_Assess(nmap, ddos):
 
 def min_detect(records):
     message = records.collect()
+    # print(message)
     if len(message) > 0:
 	result = detectBatch(message)
     else:
@@ -258,10 +274,12 @@ def min_detect(records):
     print "result: ",result
     
     for each in result:
-	each = eval(each)
+	header =eval(message[each[0]])
+	each = eval(message[each[1]])
+	print type(header),header,'\n',each
 	server_id = "1"
 	rule_id = "001"
-	level = 6
+	level = 8#6
 	timestamp = time.time()
 	location_id = "2"
 	src_ip = each["src_ip"]
@@ -270,25 +288,33 @@ def min_detect(records):
 	dst_port = each["dport"]
 	alertid = "0"
 	user = each["username"]
-	full_log = "request abnormal, maybe malicious request" + each["request"]
+	full_log = "request abnormal, maybe malicious request\n" + each["data"]
 	sql = '''insert into alert(server_id, rule_id, level, timestamp, location_id, src_ip, dst_ip, src_port, dst_port, alertid, user, full_log) value(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
 	cursor.execute(sql, (server_id, rule_id, level, timestamp, location_id, src_ip, dst_ip, src_port, dst_port, alertid, user, full_log))
 	sql_db.commit()
 	#send to mongodb
 	global db_min
-	each['danger'] = full_log
+	#each['danger'] = full_log
 	db_min['event_log'].insert_one(each)
 	print "mongo insert success,(event_log)min-packet"
-	
-    
-    
+	message = {"Type":"network", "Command":"Log", "Prefix":"/mis/update/danger_log", "Level":1, "Action":full_log, "Sig":"xxx", "Timestamp":time.strftime("%Y-%m-%d %H:%M:%S")}
+	# block_tcp(message)
+	#key_locator = test_decode_func(each["data"])
+	#os.system("python3 pyndn_decode.py "+header['data'])
+	#db_min['event_log'].insert_one(key_locator)
+	with open("evil_data.txt", 'w') as f:
+		f.write((header['data']))
+		f.close()
+	#os.system("python3 pyndn_decode.py")
 
 # event_lg = event_Logger("flow_log").get_event_log()
 # lg = Logger("flow_normal_log").get_log()
 try:
 	client = pymongo.MongoClient("mongodb://localhost:27017/")
 	db = client['Situation_Awareness']
+	db.authenticate("pkusz", "pkusz")
 	db_min = client['packet_flow']
+	db_min.authenticate("pkusz", "pkusz")
 	collection_name = 'SA_value'
 	collection = db[collection_name]
 except Exception as e:
@@ -318,12 +344,13 @@ def run_ip_detect(stream_context):
 	targets = msg_stream.map(lambda msg_stream: msg_stream[1])
 	process = targets.map(mapper)
 
-	process.pprint()
+	#process.pprint()
 
 	#process.map(lambda key:key["ip_src"]).countByValue()
 	#process.pprint()
 	#process.foreachRDD(sendKafka)
 	process.foreachRDD(sendTest)
+	process.count().pprint()
 
 	#process.foreachRDD(lambda rdd: rdd.foreachPartition(sendMongoDB))
 	#msg_stream.saveAsTextFile('out.txt')
@@ -352,8 +379,14 @@ def exec_min():
 
 
 if __name__ == "__main__":
-	config = SparkConf()
-	scontext = SparkContext("local[2]", "kafka_pyspark_min-packet")
+	config = SparkConf().setMaster("local[*]").set("spark.cores.max",10).set("spark.default.parallelism", 30).set("spark.streaming.kafka.maxRatePerPartition",20000)
+	#.set("spark.streaming.backpressure.enabled",True).set("spark.streaming.kafka.maxRatePerPartition", 20000)
+	#.set("spark.executor.cores",1)
+	#.set("spark.executor.cores", 1).set("spark.cores.max",10).set("spark.default.parallelism", 200).set("spark.executor.memory","50g").setMaster("local[*]")
+	#.set("spark.streaming.kafka.maxRatePerPartition", 10000)
+	#.set("spark.executor.cores", 2).set("spark.cores.max",18)
+	#scontext = SparkContext("local[10]", "kafka_pyspark_min-packet")
+	scontext = SparkContext(conf=config)
 	stream_context = StreamingContext(scontext,3)
 	'''
 	t_ip = threading.Thread(name="ip detect", target=run_ip_detect, args=(stream_context,))

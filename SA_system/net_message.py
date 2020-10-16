@@ -41,6 +41,7 @@ class captureModule(object):
 	def __init__(self):
 		self.logger = Logger(__name__).get_log()
 		self.logger.propagate = False
+		self.data_cache = None
 		#self.logger.info("test")
 		#self.event_logger = event_Logger(__name__).get_event_log()
 
@@ -93,6 +94,14 @@ class captureModule(object):
 					data_dict["dport"] = pkt.dport
 					data_dict["bytes"] = pkt.len
 					data_dict["data"] = pkt[Raw].load
+					'''
+					if data_dict["data"][0] not in [u'\x05', u'\x06']:
+						data_dict["data"] = self.data_cache + data_dict["data"]
+						self.data_cache = data_dict["data"]	
+					else:
+						self.data_cache = data_dict["data"]
+					'''
+					
 					data_dict['Time'] = time.strftime('%Y-%m-%d %H:%M:%S')
 					log_queue.put(data_dict)
 				except:

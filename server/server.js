@@ -38,10 +38,19 @@ fs.readFile(path.join(__dirname,'/home/minuser/xin777/logs/event.log'),'utf-8',(
 const ids_log = require('./routes/api/ids_log');
 const users = require('./routes/api/users');
 const alerts = require('./routes/api/alerts');
+const host_info = require('./routes/api/host_info');
+const eth_info = require('./routes/api/eth_info');
 //const ids_log = require('./routes/api/ids_log');
 
 // DB config
 const db = require('./config/keys').mongoURI;
+//mongoose
+//  .connect(
+//    db,
+//    { useNewUrlParser: true }
+//  )
+//  .then(() => console.log('MongoDB Connected'))
+//  .catch(err => console.log(err));
 
 // 使用body-parser中间件
 //app.use(bodyParser.urlencoded({ extended: false }));
@@ -49,22 +58,26 @@ const db = require('./config/keys').mongoURI;
 
 // Connect to mongodb
 /*
-mongoose
-  .connect(
-    db,{useNewUrlParser: true}
+mongoose.connect(
+    "mongodb://pkusz:pkusz@localhost:27017/Situation_Awareness?authSource=admin",{useNewUrlParser: true}
 	)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 */
+
 var mon_db1 = mongoose
   .createConnection(
-    "mongodb://localhost:27017/Situation_Awareness",
+    "mongodb://pkusz:pkusz@localhost:27017/Situation_Awareness?authSource=admin",
     { useNewUrlParser: true }
-	//,{mongos:true}
-  );
-//  .then(() => console.log('SA Connected'))
-//  .catch(err => console.log(err));
-
+    // ,{mongos:true}
+  )
+mon_db1.on('connected',function(err){
+    if(err){
+        console.log('SA连接失败：'+err);
+    }else{
+        console.log('SA Connected');
+    }
+});
 /*
 var mon_min = mongoose
   .createConnection(
@@ -99,11 +112,12 @@ require('./config/passport')(passport);
 // app.get("/",(req,res) => {
 //   res.send("Hello World!");
 // })
-
 // 使用routes
 app.use('/api/users', users);
 app.use('/api/alerts',alerts);
 app.use('/api/ids_log', ids_log);
+app.use('/api/host_info',host_info);
+app.use('/api/eth_info',eth_info);
 
 const port = process.env.PORT || 9003;
 app.listen(port, () => {
@@ -303,6 +317,5 @@ io.on('connection', function(socket) {
 app2.listen(9002, function() {
   console.log('listen on 9002')
 })
-
 
 

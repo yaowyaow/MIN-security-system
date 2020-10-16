@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 var mon_min = mongoose
   .createConnection(
-    "mongodb://localhost:27017/packet_flow",
+    "mongodb://pkusz:pkusz@127.0.0.1:27017/packet_flow?authSource=admin",
     { useNewUrlParser: true}
   );
 
@@ -161,7 +161,43 @@ router.get("/SA_event", (req,res) =>{
     .sort({ _id: -1 })
     .limit(100)
     .then(map => {
-      res.json(map);
+	//查询IPtables
+	process.exec(`iptables -S | sed -n '4,$p' | awk '{print $4}'`, function(error, stdout, stderr){
+                if(error !== null){
+                        console.log('exec error:' + error);
+                }else{
+			result = [];
+                        //分割转化为数组
+                        ip_list = stdout.split('\n');
+                        //去重去空
+                        ip_list = unique(ip_list).filter(d=>d);
+                        //遍历，转化为IP地址
+                        for(var i=0; i<ip_list.length; i++){
+                                ip_list[i] = ip_list[i].slice(0,-3);
+                        }
+                        console.log("iplist:",ip_list,typeof(ip_list));
+
+
+			for(var i=0;i<map.length;i++){
+				console.log(ip_list);
+				temp = JSON.parse(JSON.stringify(map[i]));
+				console.log(temp.srcIp,ip_list.indexOf(temp.srcIp));
+				if(ip_list.indexOf(temp.srcIp) > -1){
+					temp.ip_block = "取消黑名单";      
+					console.log(temp);
+				}else{
+					temp.ip_block = "加入黑名单";      
+					console.log(temp);
+				}
+				//console.log(map[i]);
+				result.push(temp);
+			    }
+			//console.log(map);
+			res.json(result);
+
+                }
+        });
+      //res.json(map);
     })
     .catch(err => {
       console.log(2);
@@ -305,6 +341,76 @@ router.put("/event_log_del", (req,res) => {
     }
 });
 
+router.put("/SA_event_del", (req,res) => {
+    if(req.body.params._id){
+        SA_event.deleteOne({_id:req.body.params._id}, function(error){
+                if(error){
+                        console.error(error);
+                }else{
+			console.error("test:");
+			console.error(req.body.params._id);
+                        console.error("delete success");
+                        res.send("ok");
+                }
+        });
+    }
+});
+
+function unique (arr) {
+	return Array.from(new Set(arr))
+};
+
+router.put("/SA_event_block", (req,res) => {
+    if(req.body.params.srcIp){
+	console.error(req.body.params.srcIp);
+	/*
+	process.exec(`iptables -S | sed -n '4,$p' | awk '{print $4}'`, function(error, stdout, stderr){
+		if(error !== null){
+			console.log('exec error:' + error);
+		}else{
+			//分割转化为数组
+			ip_list = stdout.split('\n');
+			//去重去空
+			ip_list = unique(ip_list).filter(d=>d);
+			//遍历，转化为IP地址
+			for(var i=0; i<ip_list.length; i++){
+				ip_list[i] = ip_list[i].slice(0,-3);
+			}
+			console.log("iplist:",ip_list,typeof(ip_list));
+		}
+	});
+	*/
+	process.exec('iptables -I INPUT -s '+req.body.params.srcIp+' -j DROP',function (error, stdout, stderr) {
+	//res.json(stdout);
+        if (error !== null) {
+          console.log('exec error: ' + error);
+	  res.send("no");
+          }else{
+          console.log(stdout);
+          res.send("ok");
+	  }
+        });
+
+    }
+});
+
+router.put("/SA_event_block_cancel", (req,res) => {
+    if(req.body.params.srcIp){
+        console.error(req.body.params.srcIp);
+        process.exec('iptables -D INPUT -s '+req.body.params.srcIp+' -j DROP',function (error, stdout, stderr) {
+        if (error !== null) {
+          console.log('exec error: ' + error);
+          }else{
+          console.log(stdout);
+          res.json(stdout);
+          }
+        });
+
+    }
+});
+
+
+
 router.put("/users_frequency_del", (req,res) => {
     if(req.body.params._id){
     	users_frequency.deleteOne({_id:req.body.params._id}, function(error){
@@ -323,6 +429,10 @@ router.put("/ueba_data", (req,res) => {
   if(req.body.params.time){
     ueba_data.find({"date":req.body.params.time}).sort({_id:-1}).limit(1000)
     .then(packet => {
+<<<<<<< HEAD
+      console.log(packet);
+=======
+>>>>>>> 13e9a3f1ca7b5d8a6658d949cfbeb091be051c8f
       res.json(packet);
     })
     .catch(err => {
@@ -331,6 +441,7 @@ router.put("/ueba_data", (req,res) => {
     });
   }
 });  
+<<<<<<< HEAD
 
 // 查询指定用户的ueba数据
 router.put("/ueba_user_data", (req,res) => {
@@ -362,6 +473,39 @@ router.get("/login_time", (req,res) =>{
   })
 });
 
+=======
+
+// 查询指定用户的ueba数据
+router.put("/ueba_user_data", (req,res) => {
+  if(req.body.params.username){
+    ueba_data.find({"username":req.body.params.username}).sort({_id:-1}).limit(1000)
+    .then(packet => {
+      let scores = [];
+      for(let i = 0; i < packet.length; i++){
+        scores.push(packet[i].score);
+      }
+      console.log(scores);
+      res.json(scores);
+    })
+    .catch(err => {
+      console.log(2);
+      res.json(err);
+    });
+  }
+}); 
+
+// 查询过去一周用户登录时间分布
+router.get("/login_time", (req,res) =>{
+  login_data.find().sort({_id:-1}).limit(1000)
+  .then(packet => {
+    res.json(packet);
+  })
+  .catch(err => {
+    res.json(err);
+  })
+});
+
+>>>>>>> 13e9a3f1ca7b5d8a6658d949cfbeb091be051c8f
 // 查询过去一周用户使用流量数据
 router.get("/flow_usage", (req,res) =>{
   flow_data.find().sort({_id:-1}).limit(1000)

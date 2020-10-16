@@ -4,14 +4,25 @@ from sklearn.preprocessing import LabelEncoder
 import pandas
 import pickle
 import json
+import numpy as np
 import os
-from utils import *
+# from utils import *
 path = os.getcwd() + "/" 
 print path
 nmapModel = pickle.load(open(path+'flowDetect/ddosmodel.model', 'rb'))
 model = pickle.load(open(path+'flowDetect/ddosmodel.model', 'rb'))
 def ddos_detect(data):
-    headers=["Transport Layer", "Source IP","Dest IP","Source Port","Dest Port","Attack Length"]
+    print 'start ddos detecting...'
+    
+    if len(data) == 0:
+        return {
+        # 'Prediction': predicted_class
+        'Safe_Packets_Detected': str(0),
+        "Hostile_Packets_Detected": str(0),
+        "Hostile_Packets_Info": {} # convert dataframe to json
+        }
+    
+    headers=["Transport Layer", "Source IP","Dest IP","Source Port","Dest Port","Attack Length", "Packet Length", "frequency"]
     data_dict = {}
     for header in headers:
         data_dict[header] = []
@@ -24,17 +35,28 @@ def ddos_detect(data):
         data_dict["Source Port"].append(temp["Source Port"])
         data_dict["Dest Port"].append(temp["Dest Port"])
         data_dict["Attack Length"].append(temp["Attack Length"])
+        data_dict["Packet Length"].append(temp["Packet Length"])
+        data_dict["frequency"].append(temp["frequency"])
 
-    # print data_dict
     df = pandas.DataFrame(data_dict)
     print df["Source IP"].value_counts()
     
     row_num = df.shape[0]
-    if row_num > 5000:
-        if (df["Source IP"].value_counts()[0] * 1.0 / (row_num * 1.0 )) > 0.5:
-            ip = df["Source IP"].value_counts().index[0]
-            df.loc[df["Source IP"] == ip, ["Attack Length"]] = 1
-
+    # flood
+    if df["Source IP"].value_counts()[0] > 10000 and (df["Source IP"].value_counts()[0] * 1.0 / (row_num * 1.0 )) > 0.75:
+        ip = df["Source IP"].value_counts().index[0]
+        df.loc[df["Source IP"] == ip, ["Attack Length"]] = 1
+    else:
+        # SYN
+        tmp = df.copy(deep=True)
+        tmp.drop_duplicates('Source IP', keep='last', inplace=True)
+        arr = np.array(tmp["Packet Length"].value_counts())
+        row_num2 = tmp.shape[0]
+        for i in range(arr.shape[0]):
+            if arr[i] > 100 and (arr[i] * 1.0 / (row_num2 * 1.0 )) > 0.8:
+                length = tmp["Packet Length"].value_counts().index[i]
+                df.loc[(df["Packet Length"] == length) & (df["frequency"] < 2) & (df["Transport Layer"] == 'tcp'), ["Attack Length"]] = 1
+    
     # data = LiveLabelEncoding("ddosDataAdjusted4.csv", df)
     X = df[['Transport Layer', 'Source IP', 'Dest IP', 'Source Port', 'Dest Port',
             'Attack Length']]
@@ -56,7 +78,9 @@ def ddos_detect(data):
         "Dest IP": [],
         "Source Port": [],
         "Dest Port": [],
-        "Attack Length": []
+        "Attack Length": [],
+        "Packet Length": [], 
+        "frequency": []
     }
     # df2 contains information about hostile flow
     df2 = pandas.DataFrame(data_dict)
@@ -91,6 +115,15 @@ def ddos_detect(data):
     }
 
 def nmap_detect(data):
+    print 'start nmap detecting...'
+    if len(data) > 10000 or len(data) == 0:
+        return {
+        # 'Prediction': predicted_class
+        'Safe_Packets_Detected': str(0),
+        "Hostile_Packets_Detected": str(0),
+        "Hostile_Packets_Info": {} # convert dataframe to json
+        }
+    #print data
     headers=["Transport Layer", "Source IP","Dest IP","Source Port","Dest Port","Attack Length"]
     data_dict = {}
     for header in headers:
@@ -138,7 +171,7 @@ def nmap_detect(data):
     
     X.loc[:,['Attack Length']] = 0
     if max_key != '':
-        if row_num < 3500 and frequency_data[max_key] >= 10 and max_key[0] != '121.15.171.82':
+        if row_num < 2000 and frequency_data[max_key] >= 15 and max_key[0] != '121.15.171.82':
             X.loc[(X['Source IP'] == max_key[0]) & (X['Dest IP'] == max_key[1]), ['Attack Length']] = 1
     
     # print X
@@ -237,7 +270,8 @@ def LiveLabelEncodingNmap(filename, df):  # same as LabelEncoding(), but use for
         data[i] = json.dumps((data[i]))
         print(data[i])
 '''
-data = ['{"Transport Layer": "udp", "Source IP": "192.168.3.207", "Dest IP": "192.168.3.255", "Source Port": 5010, "Dest Port": 5010, "Attack Length": 0}', '{"Transport Layer": "udp", "Source IP": "192.168.3.207", "Dest IP": "192.168.3.255", "Source Port": 5010, "Dest Port": 5010, "Attack Length": 0}', '{"Transport Layer": "udp", "Source IP": "192.168.3.207", "Dest IP": "192.168.3.255", "Source Port": 5010, "Dest Port": 5010, "Attack Length": 0}']*100
-data = [{"Attack Length": 0, "Source IP": "121.15.171.82", "Transport Layer": "tcp", "Packet Length": 60, "Source Port": 46946, "Dest Port": 9002, "Dest IP": "192.168.3.50"}]*100
+# data = ['{"Transport Layer": "udp", "Source IP": "192.168.3.207", "Dest IP": "192.168.3.255", "Source Port": 5010, "Dest Port": 5010, "Attack Length": 0}', '{"Transport Layer": "udp", "Source IP": "192.168.3.207", "Dest IP": "192.168.3.255", "Source Port": 5010, "Dest Port": 5010, "Attack Length": 0}', '{"Transport Layer": "udp", "Source IP": "192.168.3.207", "Dest IP": "192.168.3.255", "Source Port": 5010, "Dest Port": 5010, "Attack Length": 0}']*100
+# data = [{"Attack Length": 0, "Source IP": "121.15.171.82", "Transport Layer": "tcp", "Packet Length": 60, "Source Port": 46946, "Dest Port": 9002, "Dest IP": "192.168.3.50"}]*100
 
 #data[0] = json.dumps(data[0])
+# ddos_detect(None)

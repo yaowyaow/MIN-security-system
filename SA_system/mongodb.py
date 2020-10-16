@@ -69,6 +69,7 @@ class mongoOperate():
 			#exec(str("print 'test'"))
 			exec("self.db = " + str(self.db_conn) + "." + str(self.db_database))
 			print self.db
+			self.db.authenticate("pkusz", "pkusz")
 			exec("self.collection = " + "self.db" + "." + str(self.db_collection))
 			print self.collection
 			self.db_connect_status = str(self.db_conn).split(" ")[-1][:-1]

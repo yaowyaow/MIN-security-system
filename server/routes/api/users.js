@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 
 var mon_min = mongoose
   .createConnection(
-    "mongodb://localhost:27017/packet_flow",
+   "mongodb://pkusz:pkusz@localhost:27017/Situation_Awareness?authSource=admin",
     { useNewUrlParser: true}
   );
 
