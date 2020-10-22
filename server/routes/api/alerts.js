@@ -61,11 +61,7 @@ try{
 // @access Privte
 //router.get("/",passport.authenticate("jwt",{session:false}),(req,res) =>{
 router.get("/", (req,res) => {
-<<<<<<< HEAD
 	conn.query('SELECT a.id,a.location_id,a.level,a.full_log,a.timestamp,b.hostname,c.name,(SELECT GROUP_CONCAT(d.cat_name) from category d WHERE d.cat_id in (select e.cat_id from signature_category_mapping e where e.rule_id =a.rule_id))cat_name FROM alert a,server b,location c  WHERE a.id<=(select max(id) from alert) and a.id>((select max(id) from alert) -1000) and a.server_id = b.id and a.location_id = c.id order by a.id desc ',function(error,result){
-=======
-	conn.query('SELECT a.id,a.location_id,a.level,a.full_log,a.timestamp,b.hostname,c.name,(SELECT GROUP_CONCAT(d.cat_name) from category d WHERE d.cat_id in (select e.cat_id from signature_category_mapping e where e.rule_id =a.rule_id))cat_name FROM alert a,server b,location c  WHERE a.server_id = b.id and a.location_id = c.id order by id desc limit 1000',function(error,result){
->>>>>>> 13e9a3f1ca7b5d8a6658d949cfbeb091be051c8f
         if(error){
 	   //throw error;
 	   console.log(error);
