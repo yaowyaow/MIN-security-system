@@ -15,7 +15,7 @@ var mon_min = mongoose
 module.exports.mon_min = mon_min;
 
 const models = require('../../config/db');
-const eth_info = require("../../modeis/EthInfo");//引用
+const eth_info = require("../../models/EthInfo");//引用
 var process = require("child_process");
 
 //console.log(packet_flow.find({}).limit(3));

@@ -15,15 +15,15 @@ var mon_min = mongoose
 module.exports.mon_min = mon_min;
 
 const models = require('../../config/db');
-const packet_flow = require("../../modeis/packet_flow");//引用
-const event_log = require("../../modeis/event_log");
-const users_frequency = require("../../modeis/users_frequency");
-const SA_event = require("../../modeis/SA_event");
-const SA_value = require("../../modeis/SA_value");
-const SA_host_value = require("../../modeis/SA_host_value");
-const ueba_data = require("../../modeis/ueba_data")
-const login_data = require("../../modeis/login_time")
-const flow_data = require("../../modeis/flow_usage")
+const packet_flow = require("../../models/packet_flow");//引用
+const event_log = require("../../models/event_log");
+const users_frequency = require("../../models/users_frequency");
+const SA_event = require("../../models/SA_event");
+const SA_value = require("../../models/SA_value");
+const SA_host_value = require("../../models/SA_host_value");
+const ueba_data = require("../../models/ueba_data")
+const login_data = require("../../models/login_time")
+const flow_data = require("../../models/flow_usage")
 var process = require("child_process");
 
 //console.log(packet_flow.find({}).limit(3));

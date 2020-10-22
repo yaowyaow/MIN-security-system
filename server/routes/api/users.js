@@ -16,7 +16,7 @@ var mon_min = mongoose
 
 module.exports.mon_min = mon_min;
 
-const User = require("../../modeis/User");//引用
+const User = require("../../models/User");//引用
 const jwt = require('jsonwebtoken');//引用 jsonwebtoken
 const keys = require("../../config/keys");//加密名字keys.secretOrKey 引用
 const passport = require("passport");
